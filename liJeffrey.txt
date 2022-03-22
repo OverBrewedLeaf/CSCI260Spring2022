@@ -1,0 +1,29 @@
+.data
+frameBuffer:	.space	0x80000		#512 wide X 256 high pixels
+m:		.word	80		#size of inner square	
+n:		.word 	120		#size of outer square
+c1r: 		.word 	0x00ff0000
+c1g: 		.word  	0x0
+c1b: 		.word 	0x0
+c2r: 		.word 	0x0
+c2g: 		.word 	0x0000ff00
+c2b: 		.word 	0x0
+
+.text
+#alloc
+la $s0,frameBuffer		#framebuffer
+la $s1,m 				#s1<-addr m
+lw $s1,($s1)			#s1<-m
+la $s2,n 				#s2<-addr n
+lw $s2,($s2)			#s2<-n
+addi $s3,$s0,524388		#s3 512 * 256 * 4 + framebuffer
+
+li $s7,0x00FFFF00 		#s7<-yellow
+addi $t0,$s0,0 			#start point for t1
+background:
+sw $s7,($t0) # color with yellow
+addi $t0,$t0,4 # add 4 each iteration
+beq $t0,$s1,endback# 	#if t1 == t4 end; else continue
+j background
+endback:
+
